@@ -1,5 +1,6 @@
-import TodoForm from "@/components/TodoForm";
-import TodoList from "@/components/TodoList";
+import TodoForm from "@/components/Todo/TodoForm";
+import TodoList from "@/components/Todo/TodoList";
+import { ToastContainer } from "react-toastify";
 
 export default function Home() {
   return (
@@ -7,6 +8,7 @@ export default function Home() {
       <h1 className="text-2xl font-bold text-center">Görev Listesi</h1>
       <TodoForm />
       <TodoList />
+      <ToastContainer />
     </div>
   );
 }

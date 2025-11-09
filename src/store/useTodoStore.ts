@@ -8,7 +8,7 @@ interface TodoState {
   updateTodo: (updatedTodo: Todo) => void;
 }
 
-export const useStore = create<TodoState>((set) => ({
+export const useTodoStore = create<TodoState>((set) => ({
   todos: [],
   addTodo: (todo) =>
     set((state) => ({

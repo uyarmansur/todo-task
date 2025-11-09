@@ -1,7 +1,7 @@
 export interface Todo {
-  id: string;
+  id?: string | undefined;
   title: string;
   description: string;
   status: "pending" | "completed";
-  createdAt: Date;
+  createdAt?: Date | undefined;
 }
