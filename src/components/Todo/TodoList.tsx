@@ -9,7 +9,7 @@ import Badge from "../ui/Badge";
 import Loader from "../common/Loader";
 
 export default function TodoList() {
-  const { todos, setTodos } = useTodoStore();
+  const { todos, setTodos, loading } = useTodoStore();
   const { fetchTodos, updateTodoStatus, deleteTodo } = useTodoService();
   useEffect(() => {
     fetchTodos();
@@ -34,68 +34,74 @@ export default function TodoList() {
     }
   };
 
+  if (loading) {
+    return <Loader />;
+  }
+
+  if (!loading && todos.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full p-4">
+        <h2 className="text-2xl font-semibold text-gray-300 mb-4">
+          Henüz eklenmiş bir görev yok.
+        </h2>
+        <p className="text-gray-500">Lütfen yeni görevler ekleyin.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="p-4 min-h-screen">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {todos && todos.length > 0 ? (
-          todos.map((todo, index) => (
-            <div
-              key={index}
-              className="p-6 border border-teal-500 rounded-xl shadow-lg hover:shadow-2xl transition duration-300 ease-in-out bg-gray-800/70 transform hover:scale-[1.02]"
-            >
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="text-xl font-bold text-teal-400 truncate max-w-[80%]">
-                  {todo?.title}
-                </h3>
-                <Badge className={getStatusClasses(todo?.status)}>
-                  {todo?.status === "completed" ? "Tamamlandı" : "Beklemede"}
-                </Badge>
-              </div>
-
-              <p className="text-gray-400 mb-4 text-sm h-12 overflow-hidden">
-                {todo?.description || (
-                  <span className="italic text-gray-500">Açıklama yok</span>
-                )}
-              </p>
-
-              <hr className="border-gray-700 mb-4" />
-
-              <div className="flex justify-between items-center">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={todo.status === "completed"}
-                    onChange={(e) =>
-                      handleStatusChange(
-                        e.target.checked ? "completed" : "pending",
-                        todo.id
-                      )
-                    }
-                    className="w-5 h-5 accent-teal-400 rounded border-teal-500 transition"
-                  />
-                </label>
-
-                <span className="text-xs text-gray-500 ml-auto mr-4">
-                  {todo?.createdAt
-                    ? new Date(todo.createdAt).toLocaleDateString("tr-TR", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })
-                    : "Tarih yok"}
-                </span>
-                <TrashIcon onClick={() => handleDelete(todo?.id)} />
-              </div>
+        {todos.map((todo, index) => (
+          <div
+            key={index}
+            className="p-6 border border-teal-500 rounded-xl shadow-lg hover:shadow-2xl transition duration-300 ease-in-out bg-gray-800/70 transform hover:scale-[1.02]"
+          >
+            <div className="flex justify-between items-start mb-4">
+              <h3 className="text-xl font-bold text-teal-400 truncate max-w-[80%]">
+                {todo?.title}
+              </h3>
+              <Badge className={getStatusClasses(todo?.status)}>
+                {todo?.status === "completed" ? "Tamamlandı" : "Beklemede"}
+              </Badge>
             </div>
-          ))
-        ) : (
-          <div className="lg:col-span-3 text-center p-12 bg-gray-800/80 border border-gray-700 rounded-xl">
-            <Loader />
-            <p className="mt-4 text-lg text-gray-400">
-              Veri Yükleniyor Veya Liste Boş...
+
+            <p className="text-gray-400 mb-4 text-sm h-12 overflow-hidden">
+              {todo?.description || (
+                <span className="italic text-gray-500">Açıklama yok</span>
+              )}
             </p>
+
+            <hr className="border-gray-700 mb-4" />
+
+            <div className="flex justify-between items-center">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={todo.status === "completed"}
+                  onChange={(e) =>
+                    handleStatusChange(
+                      e.target.checked ? "completed" : "pending",
+                      todo.id
+                    )
+                  }
+                  className="w-5 h-5 accent-teal-400 rounded border-teal-500 transition"
+                />
+              </label>
+
+              <span className="text-xs text-gray-500 ml-auto mr-4">
+                {todo?.createdAt
+                  ? new Date(todo.createdAt).toLocaleDateString("tr-TR", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })
+                  : "Tarih yok"}
+              </span>
+              <TrashIcon onClick={() => handleDelete(todo?.id)} />
+            </div>
           </div>
-        )}
+        ))}
       </div>
     </div>
   );

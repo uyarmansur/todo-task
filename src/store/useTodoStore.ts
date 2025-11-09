@@ -2,6 +2,8 @@ import { create } from "zustand";
 import { Todo } from "@/types/types";
 
 interface TodoState {
+  loading: boolean;
+  setLoading: (loading: boolean) => void;
   todos: Todo[];
   addTodo: (todo: Todo) => void;
   setTodos: (todos: Todo[]) => void;
@@ -9,6 +11,8 @@ interface TodoState {
 }
 
 export const useTodoStore = create<TodoState>((set) => ({
+  loading: false,
+  setLoading: (loading: boolean) => set({ loading }),
   todos: [],
   addTodo: (todo) =>
     set((state) => ({

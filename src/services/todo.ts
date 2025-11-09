@@ -5,20 +5,24 @@ import { toast } from "react-toastify";
 import { Todo } from "@/types/types";
 
 export const useTodoService = () => {
-  const { todos, setTodos, updateTodo, addTodo } = useTodoStore();
+  const { todos, setTodos, updateTodo, addTodo, setLoading } = useTodoStore();
 
   const fetchTodos = async () => {
     try {
+      setLoading(true);
       const res = await getApi("/api/todos");
       setTodos(res.data);
     } catch (err) {
       toast.error("Veriler getirilirken bir hata oluştu.");
+    } finally {
+      setLoading(false);
     }
   };
 
   const addSingleTodo = async (todo: Todo) => {
     const toastId = toast.loading("İşlem yapılıyor...");
     try {
+      setLoading(true);
       const res = await postApi("/api/todos", todo);
       addTodo(res);
       toast.update(toastId, {
@@ -34,6 +38,8 @@ export const useTodoService = () => {
         isLoading: false,
         autoClose: 2000,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -43,6 +49,7 @@ export const useTodoService = () => {
     if (!id) return;
 
     try {
+      setLoading(true);
       const updatedTodo = await putApi(`/api/todos/${id}`, {
         status: newStatus,
       } as Todo);
@@ -63,12 +70,15 @@ export const useTodoService = () => {
         autoClose: 3000,
         closeOnClick: true,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   const deleteTodo = async (id: string) => {
     const toastId = toast.loading("İşlem yapılıyor...");
     try {
+      setLoading(true);
       const res = await deleteApi(`/api/todos/${id}`);
       setTodos(todos.filter((todo) => todo.id !== id));
       toast.update(toastId, {
@@ -84,6 +94,8 @@ export const useTodoService = () => {
         isLoading: false,
         autoClose: 3000,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
